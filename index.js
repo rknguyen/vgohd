@@ -10,6 +10,8 @@ const { createCanvas, Image } = require('canvas')
 const fetchImageInfo = require('./utils/fetch_info')
 const downloadImage = require('./utils/download_image')
 
+const URL_REGEX = /https:\/\/www.vangoghmuseum.nl\/en\/collection\/([a-z,A-Z,0-9]{0,})/
+
 async function bootstrap() {
   const { url } = await inquirer.prompt([
     {
@@ -18,6 +20,15 @@ async function bootstrap() {
       message: 'Vangogh museum image link'
     }
   ])
+
+  if (!URL_REGEX.test(url)) {
+    console.log(
+      chalk.red(
+        'URL is not correct! Example: https://www.vangoghmuseum.nl/en/collection/s0176V1962'
+      )
+    )
+    process.exit(1)
+  }
 
   const imageInfo = await fetchImageInfo(url)
 
